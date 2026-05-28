@@ -23,7 +23,7 @@ export default function Header() {
             <Activity className="h-4 w-4" />
           </div>
           <div className="flex flex-col">
-            <span className="text-sm font-black tracking-tight text-zinc-990 leading-none">PANSCIENCE</span>
+            <span className="text-sm font-black tracking-tight text-zinc-990 leading-none">AyuNidan</span>
             <span className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase mt-0.5">Clinical AI</span>
           </div>
         </Link>
