@@ -9,7 +9,7 @@ import Footer from "@/components/Footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "PanScience | AI Clinical Dashboard",
+  title: "AyuNidan | AI Clinical Dashboard",
   description: "Advanced AI-powered clinical intelligence and risk assessment platform.",
 };
 
