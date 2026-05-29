@@ -34,11 +34,43 @@ export interface ConsultationPayload {
   rawText?: string;
 }
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+// ─── AUTH HEADERS TOKEN AGGREGATOR ───
+const getAuthHeaders = () => {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+  
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('ayunidan_token');
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`; // 🔒 Injects validated secure authorization payload
+    }
+  }
+  return headers;
+};
+
+// ─── MASTER SECURE INTERCEPTOR BRIDGE ───
+export const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
+  
+  const config = {
+    ...options,
+    headers: {
+      ...getAuthHeaders(),
+      ...options.headers,
+    },
+  };
+
+  const response = await fetch(`${baseUrl}${endpoint}`, config);
+  return response;
+};
+
+// ─── UTILITIES & HANDLERS LINKED WITH SECURE TRACKS ───
 
 export async function getDashboardData(): Promise<DashboardData | null> {
   try {
-    const res = await fetch(`${BASE_URL}/consultations/dashboard`, {
+    // 🌟 FIX: Shifting to secure apiFetch tracking
+    const res = await apiFetch("/consultations/dashboard", {
       method: "GET",
       cache: "no-store",
     });
@@ -53,9 +85,9 @@ export async function getDashboardData(): Promise<DashboardData | null> {
 }
 
 export async function createConsultation(payload: ConsultationPayload): Promise<Consultation> {
-  const res = await fetch(`${BASE_URL}/consultations`, {
+  // 🌟 FIX: Shifting to secure apiFetch tracking
+  const res = await apiFetch("/consultations", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
 
@@ -69,8 +101,16 @@ export async function uploadMedicalFile(file: File): Promise<string> {
   const formData = new FormData();
   formData.append("files", file);
 
-  const res = await fetch(`${BASE_URL}/uploads`, {
+  // 🌟 FIX: Shifting to secure apiFetch tracking (Multipart boundaries require overriding automated Content-Type)
+  const authHeaders = getAuthHeaders();
+  delete authHeaders['Content-Type']; // Let browser fill form-data boundary string natively
+
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
+  const res = await fetch(`${baseUrl}/uploads`, {
     method: "POST",
+    headers: {
+      ...authHeaders
+    },
     body: formData,
   });
 
@@ -106,7 +146,8 @@ export async function uploadMedicalFile(file: File): Promise<string> {
 
 export async function getConsultationById(id: string): Promise<Consultation | null> {
   try {
-    const res = await fetch(`${BASE_URL}/consultations/${id}`, {
+
+    const res = await apiFetch(`/consultations/${id}`, {
       method: "GET",
       cache: "no-store",
     });
@@ -125,8 +166,16 @@ export async function uploadVoiceNote(audioBlob: Blob): Promise<string> {
   const audioFile = new File([audioBlob], "voicenote.wav", { type: audioBlob.type });
   formData.append("audio", audioFile);
 
-  const res = await fetch(`${BASE_URL}/voice/transcribe`, {
+  // 🌟 FIX: Shifting to secure apiFetch tracking with custom multipart fallback
+  const authHeaders = getAuthHeaders();
+  delete authHeaders['Content-Type'];
+
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
+  const res = await fetch(`${baseUrl}/voice/transcribe`, {
     method: "POST",
+    headers: {
+      ...authHeaders
+    },
     body: formData,
   });
 
@@ -162,7 +211,8 @@ export async function uploadVoiceNote(audioBlob: Blob): Promise<string> {
 
 export async function getConsultations(): Promise<Consultation[]> {
   try {
-    const res = await fetch(`${BASE_URL}/consultations`, {
+    // 🌟 FIX: Shifting to secure apiFetch tracking
+    const res = await apiFetch("/consultations", {
       method: "GET",
       cache: "no-store",
     });
@@ -178,7 +228,8 @@ export async function getConsultations(): Promise<Consultation[]> {
 
 export async function explainMedicalTerm(term: string): Promise<{ term: string; explanation: string } | null> {
   try {
-    const res = await fetch(`${BASE_URL}/consultations/explain?term=${encodeURIComponent(term)}`, {
+    // 🌟 FIX: Shifting to secure apiFetch tracking
+    const res = await apiFetch(`/consultations/explain?term=${encodeURIComponent(term)}`, {
       method: "GET",
     });
 

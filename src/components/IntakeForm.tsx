@@ -6,41 +6,41 @@ import { setStatus, setConsultationData, setError } from "@/store/slices/consult
 import { uploadMedicalFile, createConsultation, uploadVoiceNote } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
-import { Mic, Square, Loader2, UploadCloud } from "lucide-react";
-
-const generateDynamicUserId = () => {
-  const timestamp = Math.floor(Date.now() / 1000).toString(16);
-  const randomHex = [...Array(16)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
-  return timestamp + randomHex;
-};
+import { Mic, Square, Loader2, UploadCloud, AlertCircle } from "lucide-react";
+import { toast } from "sonner";
 
 export default function IntakeForm() {
   const dispatch = useAppDispatch();
+  const router = useRouter();
+  
+  // Grab active loading statuses from consultation slice
   const { status, error } = useAppSelector((state) => state.consultation);
+  // Pull authenticated user instance profile directly to guarantee data mapping safety
+  const { user } = useAppSelector((state) => state.auth);
+
   const [symptoms, setSymptoms] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
-  const router = useRouter();
 
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     dispatch(setStatus("uploading"));
+    const toastId = toast.loading("AI Pipeline parsing report diagnostics...");
     try {
       const extractedText = await uploadMedicalFile(file);
       setSymptoms((prev) => (prev ? `${prev}\n\n${extractedText}` : extractedText));
       dispatch(setStatus("idle"));
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        dispatch(setError(err.message));
-      } else {
-        dispatch(setError("Upload failed"));
-      }
+      toast.success("Medical chart extracted successfully", { id: toastId });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Upload failed";
+      dispatch(setError(msg));
+      toast.error(msg, { id: toastId });
     }
   };
 
@@ -62,16 +62,16 @@ export default function IntakeForm() {
         stream.getTracks().forEach((track) => track.stop());
         
         dispatch(setStatus("uploading"));
+        const toastId = toast.loading("Processing streaming voice note telemetry...");
         try {
           const extractedText = await uploadVoiceNote(audioBlob);
           setSymptoms((prev) => (prev ? `${prev}\n\n${extractedText}` : extractedText));
           dispatch(setStatus("idle"));
-        } catch (err: unknown) {
-          if (err instanceof Error) {
-            dispatch(setError(err.message));
-          } else {
-            dispatch(setError("Voice transcription failed"));
-          }
+          toast.success("Voice transcript appended successfully", { id: toastId });
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : "Voice transcription failed";
+          dispatch(setError(msg));
+          toast.error(msg, { id: toastId });
         }
       };
 
@@ -79,6 +79,7 @@ export default function IntakeForm() {
       setIsRecording(true);
     } catch (err) {
       dispatch(setError("Microphone access denied or not supported"));
+      toast.error("Microphone hardware access denied");
     }
   };
 
@@ -92,110 +93,133 @@ export default function IntakeForm() {
   const handleSubmit = async () => {
     if (!symptoms?.trim()) return;
 
+    // Secure Verification Step
+    if (!user?.id) {
+      toast.error("Session identity lost. Please re-authenticate.");
+      router.push("/login");
+      return;
+    }
+
     dispatch(setStatus("processing"));
     try {
       const data = await createConsultation({
-        userId: generateDynamicUserId(),
+        userId: user.id, // 👈 Safe binding to real authenticated database context
         rawText: symptoms,
       });
       dispatch(setConsultationData(data));
+      toast.success("Comprehensive summary compiled successfully");
       router.push(`/consultation/${data._id}`);
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        dispatch(setError(err.message));
-      } else {
-        dispatch(setError("Processing failed"));
-      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Processing failed";
+      dispatch(setError(msg));
     }
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto shadow-sm border-zinc-200 bg-white rounded-2xl overflow-hidden">
-      <CardHeader className="border-b border-zinc-100 bg-zinc-50/50 py-5">
-        <CardTitle className="text-xl font-bold tracking-tight text-zinc-900">
+    <Card className="w-full max-w-2xl mx-auto border-zinc-200 bg-white shadow-xl/40 rounded-2xl overflow-hidden transition-all duration-300">
+      <CardHeader className="border-b border-zinc-100 bg-zinc-50/50 p-5 sm:p-6 text-left">
+        <CardTitle className="text-lg font-bold tracking-tight text-zinc-900 sm:text-xl">
           New Consultation Intake
         </CardTitle>
+        <CardDescription className="text-xs text-zinc-500 tracking-tight mt-0.5">
+          Stream unstructured charts, symptoms, or multi-modal recordings into the clinical analyzer stack.
+        </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6 pt-6">
+      
+      <CardContent className="space-y-6 p-5 sm:p-6">
+        {/* Multimodal Entry Grid Options */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          
+          {/* File Upload Zone */}
           <div
-            className="border-2 border-dashed border-zinc-200 rounded-xl p-6 text-center cursor-pointer hover:border-zinc-400 transition-all bg-zinc-50/50 flex flex-col items-center justify-center space-y-2 group"
-            onClick={() => fileInputRef.current?.click()}
+            className="border-2 border-dashed border-zinc-200 hover:border-zinc-400 rounded-xl p-5 sm:p-6 text-center cursor-pointer transition-all duration-200 bg-zinc-50/30 flex flex-col items-center justify-center space-y-2 group"
+            onClick={() => status !== "uploading" && status !== "processing" && fileInputRef.current?.click()}
           >
             <input
               type="file"
               ref={fileInputRef}
               className="hidden"
-              accept=".pdf,.png,.jpg,.jpeg,.mp3,.wav"
+              accept=".pdf,.png,.jpg,.jpeg"
               onChange={handleFileChange}
+              disabled={status === "uploading" || status === "processing"}
             />
-            <UploadCloud className="h-6 w-6 text-zinc-400 group-hover:text-zinc-600 transition-colors" />
-            <p className="text-xs text-zinc-600 font-semibold tracking-tight">
+            <div className="p-2.5 bg-white border border-zinc-200 rounded-xl shadow-sm group-hover:scale-105 transition-transform">
+              <UploadCloud className="h-5 w-5 text-zinc-600" />
+            </div>
+            <p className="text-xs text-zinc-800 font-bold tracking-tight">
               {status === "uploading" ? "AI Extraction Active..." : "Upload Medical Reports"}
             </p>
-            <p className="text-[10px] text-zinc-400">PDF, PNG, JPG up to 50MB</p>
+            <p className="text-[10px] font-medium text-zinc-400">PDF, PNG, JPG files up to 50MB</p>
           </div>
 
-          <div className={`border-2 rounded-xl p-6 text-center flex flex-col items-center justify-center space-y-2 transition-all ${isRecording ? 'border-red-300 bg-red-50/20' : 'border-zinc-200 bg-zinc-50/50'}`}>
+          {/* Voice Stream Recording Module */}
+          <div className={`border-2 rounded-xl p-5 sm:p-6 text-center flex flex-col items-center justify-center space-y-2 transition-all duration-200 ${
+            isRecording ? 'border-red-200 bg-red-50/30 animate-pulse' : 'border-zinc-200 bg-zinc-50/30'
+          }`}>
             {isRecording ? (
               <Button
                 type="button"
                 variant="destructive"
                 size="icon"
-                className="h-10 w-10 rounded-full animate-pulse shadow-md"
+                className="h-10 w-10 rounded-xl shadow-md flex items-center justify-center transition-transform hover:scale-105"
                 onClick={stopRecording}
               >
-                <Square className="h-4 w-4 fill-white" />
+                <Square className="h-4 w-4 fill-white text-white" />
               </Button>
             ) : (
               <Button
                 type="button"
                 variant="outline"
                 size="icon"
-                className="h-10 w-10 rounded-full border-zinc-300 shadow-sm hover:bg-zinc-100"
+                className="h-10 w-10 rounded-xl border-zinc-200 shadow-sm bg-white text-zinc-700 hover:bg-zinc-50 flex items-center justify-center transition-transform hover:scale-105"
                 onClick={startRecording}
                 disabled={status === "uploading" || status === "processing"}
               >
-                <Mic className="h-4 w-4 text-zinc-700" />
+                <Mic className="h-4 w-4 text-zinc-800 stroke-[2]" />
               </Button>
             )}
-            <p className="text-xs text-zinc-600 font-semibold tracking-tight">
-              {isRecording ? "Recording... Click to Stop" : "Record Patient Narrative"}
+            <p className="text-xs text-zinc-800 font-bold tracking-tight">
+              {isRecording ? "Streaming Narrative... Click Stop" : "Record Patient Voice"}
             </p>
-            <p className="text-[10px] text-zinc-400">Speak symptoms or medicine notes</p>
+            <p className="text-[10px] font-medium text-zinc-400">Speak structural symptoms or dosage</p>
           </div>
         </div>
 
-        <div className="relative">
+        {/* Text Display Processing Boundary Area */}
+        <div className="relative group">
           <Textarea
-            placeholder="Detailed clinical insights, structured symptoms, and critical diagnostic telemetry will populate here automatically upon file parsing or voice stream resolution..."
-            className="min-h-[180px] p-4 resize-none rounded-xl focus-visible:ring-1 focus-visible:ring-zinc-400 border-zinc-200 bg-transparent text-sm leading-relaxed text-zinc-800"
+            placeholder="Clinical details, extracted structured telemetry, and diagnostic logs will automatically populate here upon processing multi-modal documents..."
+            className="min-h-[160px] md:min-h-[200px] p-4 resize-none rounded-xl focus-visible:ring-1 focus-visible:ring-zinc-400 border-zinc-200 bg-zinc-50/10 text-sm leading-relaxed text-zinc-800 placeholder:text-zinc-400"
             value={symptoms}
             onChange={(e) => setSymptoms(e.target.value)}
             disabled={status === "processing" || status === "uploading" || isRecording}
           />
+          
           {(status === "uploading" || status === "processing") && (
-            <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] rounded-xl flex items-center justify-center space-y-2 flex-col">
-              <Loader2 className="h-6 w-6 text-zinc-900 animate-spin" />
-              <p className="text-xs font-bold tracking-tight text-zinc-900 uppercase">
-                {status === "uploading" ? "AI Pipeline Extracting..." : "Compiling Final Diagnostic Profile..."}
+            <div className="absolute inset-0 bg-white/70 backdrop-blur-[1px] rounded-xl flex items-center justify-center space-y-2 flex-col z-20 transition-all">
+              <Loader2 className="h-5 w-5 text-zinc-900 animate-spin" />
+              <p className="text-[11px] font-bold tracking-wider text-zinc-900 font-mono uppercase">
+                {status === "uploading" ? "AI Extraction Pipeline Syncing..." : "Compiling Clinical Inference Layer..."}
               </p>
             </div>
           )}
         </div>
 
+        {/* Error Boundary Elements */}
         {error && (
-          <div className="p-3.5 bg-red-50 border border-red-100 rounded-xl">
-            <p className="text-xs text-red-700 font-semibold tracking-tight">{error}</p>
+          <div className="p-3.5 bg-red-50/80 border border-red-100 rounded-xl flex items-start gap-2.5">
+            <AlertCircle className="w-4 h-4 text-red-600 mt-0.5 shrink-0" />
+            <p className="text-xs text-red-700 font-semibold tracking-tight leading-normal">{error}</p>
           </div>
         )}
 
+        {/* Main Process Execution CTA Button */}
         <Button
-          className="w-full bg-zinc-900 text-zinc-50 hover:bg-zinc-800 h-12 rounded-xl text-sm font-bold tracking-tight transition-all shadow-sm"
+          className="w-full bg-zinc-950 text-white hover:bg-zinc-800 h-12 rounded-xl text-xs font-bold tracking-wide transition-all shadow-md hover:shadow-lg disabled:opacity-40 disabled:hover:shadow-none"
           onClick={handleSubmit}
           disabled={!symptoms?.trim() || status === "processing" || status === "uploading" || isRecording}
         >
-          Generate Comprehensive Clinical Summary
+          {status === "processing" ? "Reconciling Analytics..." : "Generate Comprehensive Clinical Summary"}
         </Button>
       </CardContent>
     </Card>

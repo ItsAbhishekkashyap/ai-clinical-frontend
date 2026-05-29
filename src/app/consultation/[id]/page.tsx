@@ -1,15 +1,47 @@
+"use client"; // 🌟 FIX: Shifting to Client Component to access browser's localStorage token context
+
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ShieldAlert, Activity, FileText, Pill, Clock, ArrowLeft, Heart, Layers } from "lucide-react";
 import Link from "next/link";
-import { getConsultationById } from "@/lib/api";
+import { getConsultationById, Consultation } from "@/lib/api"; // Added explicit type binding
 import MedicalExplainer from "@/components/MedicalExplainer";
 
-export default async function ReportPage({ params }: { params: Promise<{ id: string }> }) {
-  const resolvedParams = await params;
-  const consultation = await getConsultationById(resolvedParams.id);
+export default function ReportPage() {
+  const { id } = useParams(); // 🌟 FIX: Safely extracting dynamic router ID parameter on client side
+  const [consultation, setConsultation] = useState<Consultation | null>(null);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    if (id) {
+      async function fetchReport() {
+        try {
+          const data = await getConsultationById(id as string);
+          setConsultation(data);
+        } catch (error) {
+          console.error("Error loading secure clinical sheet:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+      fetchReport();
+    }
+  }, [id]);
+
+  // ─── SHIMMER LOADING LAYER ───
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[70vh] space-y-4">
+        <div className="h-6 w-6 border-2 border-zinc-900 border-t-transparent rounded-full animate-spin" />
+        <p className="text-xs font-mono text-zinc-400">Decrypting Secure Clinical Matrix...</p>
+      </div>
+    );
+  }
+
+  // ─── NOT FOUND FALLBACK LAYER ───
   if (!consultation) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[70vh] space-y-6">
@@ -56,7 +88,7 @@ export default async function ReportPage({ params }: { params: Promise<{ id: str
                 {new Date(consultation.createdAt).toLocaleString()}
               </span>
               <span className="bg-zinc-50 border border-zinc-200/60 px-2.5 py-1 rounded-md text-zinc-500">
-                ID: {resolvedParams.id.slice(-8).toUpperCase()}
+                ID: {(id as string).slice(-8).toUpperCase()}
               </span>
             </div>
           </div>
