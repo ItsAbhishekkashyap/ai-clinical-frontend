@@ -10,9 +10,7 @@ import {
   FileText, ChevronRight, Shield
 } from "lucide-react";
 
-/* ─────────────────────────────────────────────
-   Floating ECG / Pulse SVG animation
-───────────────────────────────────────────── */
+
 function PulseLineAnim() {
   return (
     <svg viewBox="0 0 320 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
@@ -39,34 +37,32 @@ function PulseLineAnim() {
   );
 }
 
-/* ─────────────────────────────────────────────
-   Animated floating orb background
-───────────────────────────────────────────── */
+
 function HeroOrbs() {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {/* Large emerald orb top-right */}
+    
       <motion.div
         className="absolute -top-32 -right-32 w-[480px] h-[480px] rounded-full opacity-[0.07]"
         style={{ background: "radial-gradient(circle, #10b981 0%, transparent 70%)" }}
         animate={{ scale: [1, 1.08, 1], x: [0, 18, 0], y: [0, -12, 0] }}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
       />
-      {/* Teal orb left */}
+     
       <motion.div
         className="absolute top-1/2 -left-24 w-[320px] h-[320px] rounded-full opacity-[0.06]"
         style={{ background: "radial-gradient(circle, #0d9488 0%, transparent 70%)" }}
         animate={{ scale: [1, 1.12, 1], x: [0, 10, 0], y: [0, 20, 0] }}
         transition={{ duration: 13, repeat: Infinity, ease: "easeInOut", delay: 2 }}
       />
-      {/* Small sky orb center */}
+
       <motion.div
         className="absolute top-1/4 left-1/2 w-[200px] h-[200px] rounded-full opacity-[0.05]"
         style={{ background: "radial-gradient(circle, #0ea5e9 0%, transparent 70%)" }}
         animate={{ scale: [1, 1.2, 1] }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
       />
-      {/* Grid pattern */}
+
       <div
         className="absolute inset-0 opacity-[0.028]"
         style={{
@@ -78,9 +74,7 @@ function HeroOrbs() {
   );
 }
 
-/* ─────────────────────────────────────────────
-   Feature pill chip
-───────────────────────────────────────────── */
+
 const HERO_FEATURES = [
   { icon: Brain, label: "Zero-Shot AI Extraction" },
   { icon: Shield, label: "JWT Data Isolation" },
@@ -88,9 +82,7 @@ const HERO_FEATURES = [
   { icon: Zap, label: "RAG Clinical Index" },
 ];
 
-/* ─────────────────────────────────────────────
-   Stat card data
-───────────────────────────────────────────── */
+
 const ABOUT_CARDS = [
   {
     icon: FileText,
@@ -118,9 +110,7 @@ const ABOUT_CARDS = [
   },
 ];
 
-/* ─────────────────────────────────────────────
-   Animated number counter
-───────────────────────────────────────────── */
+
 function CountUp({ to, duration = 1.4 }: { to: number; duration?: number }) {
   const [val, setVal] = useState(0);
   const ref = useRef(null);
@@ -139,9 +129,7 @@ function CountUp({ to, duration = 1.4 }: { to: number; duration?: number }) {
   return <span ref={ref}>{val}</span>;
 }
 
-/* ─────────────────────────────────────────────
-   Main Component
-───────────────────────────────────────────── */
+
 export default function DashboardOverview() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -199,7 +187,7 @@ const heroOpacity = 1;
             className="text-[11px] font-bold tracking-[0.2em] uppercase text-zinc-600"
             style={{ fontFamily: "'DM Sans', sans-serif" }}
           >
-            Loading telemetry…
+            Loading Dashboard...
           </motion.p>
         </div>
       </div>
@@ -285,9 +273,7 @@ const heroOpacity = 1;
 
       <div className="ayu-dash space-y-0 max-w-full overflow-hidden">
 
-        {/* ════════════════════════════════════════
-            HERO SECTION
-        ════════════════════════════════════════ */}
+        
         <section
           
           className="relative min-h-[88vh] flex flex-col items-center justify-center text-center px-4 sm:px-8 py-24 overflow-hidden"
@@ -311,7 +297,7 @@ const heroOpacity = 1;
               <span className="section-label text-zinc-500">Clinical Processing Grid — Online</span>
             </motion.div>
 
-            {/* Hero headline */}
+          
             <motion.h1
               variants={fadeUp(0.08)}
               initial="hidden"
@@ -334,7 +320,7 @@ const heroOpacity = 1;
               </span>
             </motion.h1>
 
-            {/* Sub */}
+        
             <motion.p
               variants={fadeUp(0.16)}
               initial="hidden"
@@ -345,7 +331,7 @@ const heroOpacity = 1;
               structured, actionable medical telemetry powered by AI.
             </motion.p>
 
-            {/* Feature chips */}
+         
             <motion.div
               variants={fadeUp(0.22)}
               initial="hidden"
@@ -366,7 +352,7 @@ const heroOpacity = 1;
               ))}
             </motion.div>
 
-            {/* CTA buttons */}
+       
             <motion.div
               variants={fadeUp(0.3)}
               initial="hidden"
@@ -392,7 +378,7 @@ const heroOpacity = 1;
               </motion.button>
             </motion.div>
 
-            {/* ECG pulse strip */}
+          
             <motion.div
               variants={fadeUp(0.38)}
               initial="hidden"
@@ -404,7 +390,7 @@ const heroOpacity = 1;
 
           </motion.div>
 
-          {/* Scroll indicator */}
+         
           <motion.div
             className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 opacity-40"
             animate={{ y: [0, 6, 0] }}
@@ -415,20 +401,18 @@ const heroOpacity = 1;
           </motion.div>
         </section>
 
-        {/* ════════════════════════════════════════
-            ABOUT / FEATURES SECTION
-        ════════════════════════════════════════ */}
+  
         <section className="relative px-4 sm:px-8 lg:px-12 xl:px-16 py-24 overflow-hidden"
           style={{ background: "#ffffff" }}
         >
-          {/* Decorative left bar */}
+     
           <div className="absolute left-0 top-1/4 w-1 h-1/2 rounded-r-full"
             style={{ background: "linear-gradient(180deg, transparent, #10b981, transparent)" }}
           />
 
           <div className="max-w-6xl mx-auto space-y-14">
 
-            {/* Section header */}
+          
             <motion.div
               className="flex flex-col gap-3 max-w-xl"
               initial={{ opacity: 0, y: 24 }}
@@ -448,7 +432,7 @@ const heroOpacity = 1;
               </p>
             </motion.div>
 
-            {/* Feature cards grid */}
+            
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
               {ABOUT_CARDS.map(({ icon: Icon, title, desc, accent }, i) => (
                 <motion.div
@@ -483,15 +467,13 @@ const heroOpacity = 1;
           </div>
         </section>
 
-        {/* ════════════════════════════════════════
-            DASHBOARD / TELEMETRY SECTION
-        ════════════════════════════════════════ */}
+      
        <section
           id="dashboard-section"
           className="relative px-4 sm:px-8 lg:px-12 xl:px-16 py-24 overflow-hidden"
           style={{ background: "linear-gradient(180deg,#f9fafb 0%,#ffffff 100%)" }}
         >
-          {/* Dot grid */}
+     
           <div className="absolute inset-0 pointer-events-none"
             style={{
               backgroundImage: "radial-gradient(circle, rgba(16,185,129,0.18) 1px, transparent 1px)",
@@ -499,14 +481,14 @@ const heroOpacity = 1;
               opacity: 0.5,
             }}
           />
-          {/* Top glow */}
+         
           <div className="absolute top-0 left-1/2 -translate-x-1/2 h-px pointer-events-none"
             style={{ width: "50%", background: "linear-gradient(90deg,transparent,rgba(16,185,129,0.4),transparent)" }}
           />
  
           <div className="relative max-w-6xl mx-auto space-y-10">
  
-            {/* ── Header ── */}
+       
             <motion.div
               className="flex flex-col sm:flex-row sm:items-end justify-between gap-5"
               initial={{ opacity: 0, y: 20 }}
@@ -568,16 +550,16 @@ const heroOpacity = 1;
                     border: "1px solid rgba(16,185,129,0.15)",
                   }}
                 >
-                  {/* Subtle Corner Glow matching the primary emerald theme */}
+                 
                   <div className="absolute -bottom-16 -right-16 w-56 h-56 rounded-full pointer-events-none opacity-20"
                     style={{ background: "radial-gradient(circle, rgba(16,185,129,0.4) 0%, transparent 70%)" }}
                   />
-                  {/* Soft Top-left highlight */}
+              
                   <div className="absolute -top-12 -left-12 w-40 h-40 rounded-full pointer-events-none opacity-30"
                     style={{ background: "radial-gradient(circle, rgba(14,165,233,0.15) 0%, transparent 70%)" }}
                   />
 
-                  {/* Gentle Data Grid Overlay */}
+         
                   <div className="absolute inset-0 opacity-[0.02] pointer-events-none"
                     style={{
                       backgroundImage: "linear-gradient(rgba(16,185,129,1) 1px, transparent 1px), linear-gradient(90deg, rgba(16,185,129,1) 1px, transparent 1px)",
@@ -585,7 +567,7 @@ const heroOpacity = 1;
                     }}
                   />
 
-                  {/* Header Row */}
+             
                   <div className="flex items-center justify-between z-10 relative">
                     <span className="ayu-mono text-[9.5px] font-bold tracking-[0.15em] uppercase text-zinc-500 bg-white border border-zinc-200 shadow-sm px-2.5 py-1 rounded-[7px]">
                       Aggregation Matrix
@@ -597,7 +579,7 @@ const heroOpacity = 1;
                     </div>
                   </div>
 
-                  {/* Main Metric Counter */}
+                 
                   <div className="z-10 relative mt-6 mb-4">
                     <div className="text-[72px] font-black leading-none tracking-tighter tabular-nums"
                          style={{
@@ -613,7 +595,7 @@ const heroOpacity = 1;
                     </span>
                   </div>
 
-                  {/* Footer Stream Indicator */}
+                 
                   <div className="z-10 relative pt-4 border-t border-zinc-100 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className="relative flex h-2 w-2 shrink-0">
@@ -632,7 +614,7 @@ const heroOpacity = 1;
                 </div>
               </motion.div>
  
-              {/* Risk stratification card */}
+       
               <motion.div
                 className="lg:col-span-2"
                 initial={{ opacity: 0, y: 24 }}
@@ -644,7 +626,7 @@ const heroOpacity = 1;
                   className="h-full rounded-[20px] border border-zinc-200/80 bg-white p-7 flex flex-col gap-6"
                   style={{ boxShadow: "0 2px 20px rgba(0,0,0,0.04), 0 0 0 1px rgba(16,185,129,0.04)" }}
                 >
-                  {/* Card header */}
+                 
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div className="flex items-center gap-2.5">
                       <div className="h-7 w-7 rounded-[8px] flex items-center justify-center shrink-0"
@@ -661,7 +643,7 @@ const heroOpacity = 1;
                     </span>
                   </div>
  
-                  {/* Bars */}
+                
                   <div className="space-y-5 flex-1">
                     {[
                       { label: "High Risk",   pct: data && data.total > 0 ? (highRisk.count / data.total) * 100 : 0,   count: highRisk.count,   color: "#ef4444", bg: "#fef2f2", bdr: "#fecaca", bar: "linear-gradient(90deg,#ef4444,#dc2626)" },
@@ -680,7 +662,7 @@ const heroOpacity = 1;
                             <span className="text-[10px] text-zinc-600 font-medium">cases</span>
                           </div>
                         </div>
-                        {/* Track */}
+                      
                         <div className="h-[6px] rounded-full overflow-hidden" style={{ background: bg, border: `1px solid ${bdr}` }}>
                           <motion.div
                             initial={{ width: 0 }}
@@ -695,7 +677,7 @@ const heroOpacity = 1;
                     ))}
                   </div>
  
-                  {/* Mini summary row */}
+                
                   <div className="flex items-center gap-3 pt-4 border-t border-zinc-100">
                     {[
                       { label: "Total", val: data?.total ?? 0, color: "#18181b" },
@@ -712,7 +694,7 @@ const heroOpacity = 1;
               </motion.div>
             </div>
  
-            {/* ── RAG Pipeline card ── */}
+           
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -726,7 +708,7 @@ const heroOpacity = 1;
                   background: "linear-gradient(135deg,rgba(16,185,129,0.04) 0%,rgba(14,165,233,0.03) 100%)",
                 }}
               >
-                {/* bg shimmer */}
+               
                 <div className="absolute inset-0 pointer-events-none"
                   style={{
                     backgroundImage: "radial-gradient(circle at 10% 50%, rgba(16,185,129,0.06) 0%, transparent 60%)",
