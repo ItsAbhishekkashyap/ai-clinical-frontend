@@ -101,7 +101,7 @@ const ABOUT_CARDS = [
   {
     icon: Brain,
     title: "AI Entity Extraction",
-    desc: "Gemini 2.5 powered zero-shot extraction of symptoms, medications, and biomarkers — with Zod schema validation.",
+    desc: "AI powered zero-shot extraction of symptoms, medications, and biomarkers — with Zod schema validation.",
     accent: "#0ea5e9",
   },
   {
@@ -341,8 +341,8 @@ const heroOpacity = 1;
               animate="show"
               className="text-[15px] sm:text-[17px] font-medium text-zinc-500 leading-relaxed max-w-[560px]"
             >
-              AyuNidan bridges chaotic clinical narratives — PDFs, voice notes, raw text — into
-              structured, actionable medical telemetry powered by Gemini 2.5.
+              AyuNidan bridges chaotic clinical narratives PDFs, voice notes, raw text into
+              structured, actionable medical telemetry powered by AI.
             </motion.p>
 
             {/* Feature chips */}
@@ -657,7 +657,7 @@ const heroOpacity = 1;
                     <span className="ayu-mono text-[9px] tracking-[0.14em] uppercase px-2.5 py-1 rounded-[7px] self-start sm:self-auto"
                       style={{ background: "rgba(16,185,129,0.07)", color: "#059669", border: "1px solid rgba(16,185,129,0.14)" }}
                     >
-                      Gemini 2.5 Core
+                      AI Core
                     </span>
                   </div>
  
