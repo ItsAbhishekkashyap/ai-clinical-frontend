@@ -196,7 +196,7 @@ const heroOpacity = 1;
           <motion.p
             animate={{ opacity: [0.4, 1, 0.4] }}
             transition={{ repeat: Infinity, duration: 1.8 }}
-            className="text-[11px] font-bold tracking-[0.2em] uppercase text-zinc-400"
+            className="text-[11px] font-bold tracking-[0.2em] uppercase text-zinc-600"
             style={{ fontFamily: "'DM Sans', sans-serif" }}
           >
             Loading telemetry…
@@ -486,214 +486,280 @@ const heroOpacity = 1;
         {/* ════════════════════════════════════════
             DASHBOARD / TELEMETRY SECTION
         ════════════════════════════════════════ */}
-        <section
-  id="dashboard-section"
-  className="relative px-4 sm:px-8 lg:px-12 xl:px-16 py-24 overflow-hidden"
-  style={{ background: "linear-gradient(180deg, #f7faf9 0%, #fafafa 100%)" }}
->
-  {/* Bg grid */}
-  <div
-    className="absolute inset-0 opacity-[0.03] pointer-events-none"
-    style={{
-      backgroundImage: "linear-gradient(rgba(16,185,129,1) 1px, transparent 1px), linear-gradient(90deg, rgba(16,185,129,1) 1px, transparent 1px)",
-      backgroundSize: "40px 40px",
-    }}
-  />
-
-  {/* 🌟 FIX: Attaching the ref here, and adding a fallback check so it animates regardless if viewport observer fails */}
-  <div ref={statsRef} className="relative max-w-6xl mx-auto space-y-10">
-
-    {/* Section label + header row */}
-    <motion.div
-      className="flex flex-col sm:flex-row sm:items-end justify-between gap-5 border-b border-zinc-200/70 pb-7"
-      initial={{ opacity: 0, y: 20 }}
-      // 🌟 FIX: Fallback to true if reference state acts up during early hydration frames
-      animate={(statsInView || loading === false) ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-    >
-      <div className="space-y-2">
-        <div className="flex items-center gap-2.5">
-          <span className="relative flex h-2 w-2 shrink-0">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-          </span>
-          <span className="section-label text-xs font-mono tracking-wider text-zinc-400 uppercase">Clinical Processing Grid</span>
-        </div>
-        <h2 className="ayu-serif text-3xl sm:text-4xl text-zinc-900 leading-tight tracking-[-0.02em]">
-          Clinical <span className="italic" style={{ color: "#10b981" }}>Overview</span>
-        </h2>
-        <p className="text-[13px] font-medium text-zinc-500">
-          Real-time analytical telemetry and patient stratified risk metrics.
-        </p>
-      </div>
-
-      <Link href="/consultation/new">
-        <motion.button
-          className="glow-btn bg-zinc-950 text-white hover:bg-zinc-800 flex items-center gap-2 px-5 h-11 rounded-[11px] text-[12.5px] font-bold shrink-0 group"
-          whileTap={{ scale: 0.97 }}
+       <section
+          id="dashboard-section"
+          className="relative px-4 sm:px-8 lg:px-12 xl:px-16 py-24 overflow-hidden"
+          style={{ background: "linear-gradient(180deg,#f9fafb 0%,#ffffff 100%)" }}
         >
-          <Plus className="h-4 w-4 group-hover:rotate-90 transition-transform duration-300" strokeWidth={2.5} />
-          Initiate New Intake
-        </motion.button>
-      </Link>
-    </motion.div>
-
-    {/* Metric cards row */}
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-      {/* ── Dark total card ── */}
-      <motion.div
-        className="lg:col-span-1"
-        initial={{ opacity: 0, y: 24 }}
-        animate={(statsInView || loading === false) ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
-      >
-        {/* 🌟 FIX: Enforced dark card layout constraints safely */}
-        <div
-          className="stat-card-dark bg-zinc-950 text-white relative h-full rounded-[18px] overflow-hidden p-7 flex flex-col justify-between min-h-[220px] group"
-          style={{ border: "1px solid rgba(255,255,255,0.07)" }}
-        >
-          {/* BG glow */}
-          <div
-            className="absolute -bottom-16 -right-16 w-48 h-48 rounded-full opacity-20 pointer-events-none"
-            style={{ background: "radial-gradient(circle, #10b981 0%, transparent 70%)" }}
+          {/* Dot grid */}
+          <div className="absolute inset-0 pointer-events-none"
+            style={{
+              backgroundImage: "radial-gradient(circle, rgba(16,185,129,0.18) 1px, transparent 1px)",
+              backgroundSize: "28px 28px",
+              opacity: 0.5,
+            }}
           />
-          {/* ECG scan sweep */}
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div
-              className="ecg-scan-line absolute top-0 bottom-0 w-[60px] opacity-[0.06]"
-              style={{ background: "linear-gradient(90deg, transparent, #10b981, transparent)" }}
-            />
-          </div>
-
-          <div className="flex items-center justify-between z-10 relative">
-            <span className="ayu-mono text-[9px] tracking-[0.2em] uppercase text-zinc-400 bg-white/5 border border-white/10 px-2.5 py-1 rounded-[7px]">
-              Aggregation Matrix
-            </span>
-            <Activity className="h-4 w-4 text-emerald-400" />
-          </div>
-
-          <div className="z-10 relative my-4">
-            <div className="text-[64px] font-black text-white leading-none tracking-tighter">
-              <CountUp to={data?.total ?? 0} />
-            </div>
-            <span className="ayu-mono text-[9.5px] tracking-[0.18em] uppercase text-zinc-500 mt-1 block">
-              Total Logged Cases
-            </span>
-          </div>
-
-          <div className="z-10 relative pt-4 border-t border-white/10 flex items-center justify-between">
-            <div className="flex items-center gap-1.5 text-emerald-400">
-              <TrendingUp className="h-3.5 w-3.5" />
-              <span className="ayu-mono text-[10px] font-medium">Live Data Stream</span>
-            </div>
-            <ArrowUpRight className="h-3.5 w-3.5 text-zinc-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-          </div>
-        </div>
-      </motion.div>
-
-      {/* ── Risk stratification card ── */}
-      <motion.div
-        className="lg:col-span-2"
-        initial={{ opacity: 0, y: 24 }}
-        animate={(statsInView || loading === false) ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.12 }}
-      >
-        <div
-          className="h-full rounded-[18px] border border-zinc-200 bg-white p-7 flex flex-col justify-between"
-          style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.04)" }}
-        >
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-zinc-100 pb-5 mb-6 gap-2">
-            <div className="flex items-center gap-2.5">
-              <ShieldAlert className="h-4 w-4 text-zinc-400" strokeWidth={2} />
-              <span className="section-label text-xs font-mono text-zinc-500 uppercase tracking-wider">Stratified Risk Classification</span>
-            </div>
-            <span
-              className="ayu-mono text-[9.5px] tracking-[0.12em] uppercase px-2.5 py-1 rounded-[7px] self-start sm:self-auto"
-              style={{ background: "rgba(16,185,129,0.07)", color: "#059669", border: "1px solid rgba(16,185,129,0.15)" }}
+          {/* Top glow */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 h-px pointer-events-none"
+            style={{ width: "50%", background: "linear-gradient(90deg,transparent,rgba(16,185,129,0.4),transparent)" }}
+          />
+ 
+          <div className="relative max-w-6xl mx-auto space-y-10">
+ 
+            {/* ── Header ── */}
+            <motion.div
+              className="flex flex-col sm:flex-row sm:items-end justify-between gap-5"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0 }}
+              transition={{ duration: 0.6, ease: [0.22,1,0.36,1] }}
             >
-              Gemini 2.5 Core
-            </span>
-          </div>
-
-          <div className="space-y-5 flex-1">
-            {[
-              { label: "High Risk Spectrum", count: highRisk.count, color: "#ef4444", bg: "#fef2f2", border: "#fecaca", bar: "linear-gradient(90deg, #ef4444, #dc2626)" },
-              { label: "Medium Risk Spectrum", count: mediumRisk.count, color: "#f59e0b", bg: "#fffbeb", border: "#fde68a", bar: "linear-gradient(90deg, #f59e0b, #d97706)" },
-              { label: "Low Risk Spectrum", count: lowRisk.count, color: "#10b981", bg: "#ecfdf5", border: "#a7f3d0", bar: "linear-gradient(90deg, #10b981, #0d9488)" },
-            ].map(({ label, count, color, bg, border, bar }) => (
-              <div key={label} className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span
-                    className="ayu-mono text-[9.5px] tracking-[0.1em] uppercase px-2.5 py-1 rounded-[7px] font-medium"
-                    style={{ color, background: bg, border: `1px solid ${border}` }}
-                  >
-                    {label}
+              <div className="space-y-2">
+                <div className="flex items-center gap-2.5">
+                  <span className="relative flex h-2 w-2 shrink-0">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                   </span>
-                  <span className="text-[13px] font-bold text-zinc-900 ayu-mono">
-                    {count}{" "}
-                    <span className="text-[10px] font-normal text-zinc-400">cases</span>
-                  </span>
+                  <span className="section-label">Clinical Processing Grid</span>
                 </div>
-                <div className="risk-bar-track bg-zinc-100 h-[7px] rounded-full overflow-hidden">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={(statsInView || loading === false) ? { width: `${data && data.total > 0 ? (count / data.total) * 100 : 0}%` } : { width: 0 }}
-                    transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
-                    className="h-full rounded-full"
-                    style={{ background: bar }}
+                <h2 className="ayu-serif text-3xl sm:text-[40px] text-zinc-900 leading-tight tracking-[-0.02em]">
+                  Clinical <span className="italic" style={{ color: "#10b981" }}>Overview</span>
+                </h2>
+                <p className="text-[13px] font-medium text-zinc-500 max-w-sm">
+                  Real-time analytical telemetry and patient stratified risk metrics.
+                </p>
+              </div>
+              <Link href="/consultation/new">
+                <motion.button
+                  className="glow-btn flex items-center gap-2 px-5 h-11 rounded-[11px] text-white text-[12.5px] font-bold shrink-0 group"
+                  whileTap={{ scale: 0.97 }}
+                  whileHover={{ scale: 1.02 }}
+                >
+                  <Plus className="h-4 w-4 group-hover:rotate-90 transition-transform duration-300" strokeWidth={2.5} />
+                  Initiate New Intake
+                </motion.button>
+              </Link>
+            </motion.div>
+ 
+           
+            <motion.div
+              className="h-px w-full"
+              style={{ background: "linear-gradient(90deg,transparent,rgba(16,185,129,0.2) 30%,rgba(16,185,129,0.2) 70%,transparent)" }}
+              initial={{ scaleX: 0, opacity: 0 }}
+              whileInView={{ scaleX: 1, opacity: 1 }}
+              viewport={{ once: true, amount: 0 }}
+              transition={{ duration: 0.7, ease: [0.22,1,0.36,1] }}
+            />
+ 
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+ 
+   
+              <motion.div
+                className="lg:col-span-1"
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0 }}
+                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
+              >
+                <div
+                  className="relative h-full rounded-[20px] overflow-hidden p-7 flex flex-col justify-between min-h-[240px] group cursor-default shadow-sm hover:shadow-md transition-all duration-300"
+                  style={{
+                    background: "linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)",
+                    border: "1px solid rgba(16,185,129,0.15)",
+                  }}
+                >
+                  {/* Subtle Corner Glow matching the primary emerald theme */}
+                  <div className="absolute -bottom-16 -right-16 w-56 h-56 rounded-full pointer-events-none opacity-20"
+                    style={{ background: "radial-gradient(circle, rgba(16,185,129,0.4) 0%, transparent 70%)" }}
                   />
+                  {/* Soft Top-left highlight */}
+                  <div className="absolute -top-12 -left-12 w-40 h-40 rounded-full pointer-events-none opacity-30"
+                    style={{ background: "radial-gradient(circle, rgba(14,165,233,0.15) 0%, transparent 70%)" }}
+                  />
+
+                  {/* Gentle Data Grid Overlay */}
+                  <div className="absolute inset-0 opacity-[0.02] pointer-events-none"
+                    style={{
+                      backgroundImage: "linear-gradient(rgba(16,185,129,1) 1px, transparent 1px), linear-gradient(90deg, rgba(16,185,129,1) 1px, transparent 1px)",
+                      backgroundSize: "16px 16px",
+                    }}
+                  />
+
+                  {/* Header Row */}
+                  <div className="flex items-center justify-between z-10 relative">
+                    <span className="ayu-mono text-[9.5px] font-bold tracking-[0.15em] uppercase text-zinc-500 bg-white border border-zinc-200 shadow-sm px-2.5 py-1 rounded-[7px]">
+                      Aggregation Matrix
+                    </span>
+                    <div className="h-8 w-8 rounded-[10px] flex items-center justify-center bg-white shadow-sm"
+                      style={{ border: "1px solid rgba(16,185,129,0.2)" }}
+                    >
+                      <Activity className="h-4 w-4 text-emerald-500" strokeWidth={2.5} />
+                    </div>
+                  </div>
+
+                  {/* Main Metric Counter */}
+                  <div className="z-10 relative mt-6 mb-4">
+                    <div className="text-[72px] font-black leading-none tracking-tighter tabular-nums"
+                         style={{
+                           background: "linear-gradient(90deg, #0f172a, #334155)",
+                           WebkitBackgroundClip: "text",
+                           WebkitTextFillColor: "transparent"
+                         }}
+                    >
+                      <CountUp to={data?.total ?? 0} />
+                    </div>
+                    <span className="ayu-mono text-[10px] font-bold tracking-[0.18em] uppercase text-zinc-600 mt-2 block">
+                      Total Logged Cases
+                    </span>
+                  </div>
+
+                  {/* Footer Stream Indicator */}
+                  <div className="z-10 relative pt-4 border-t border-zinc-100 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="relative flex h-2 w-2 shrink-0">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                      </span>
+                      <span className="ayu-mono text-[10.5px] font-bold text-emerald-600 uppercase tracking-tight">Live Data Stream</span>
+                    </div>
+                    <motion.div
+                      className="opacity-0 group-hover:opacity-100 transition-opacity bg-zinc-50 border border-zinc-200 p-1.5 rounded-lg"
+                      whileHover={{ x: 2, y: -2 }}
+                    >
+                      <ArrowUpRight className="h-3.5 w-3.5 text-zinc-600" />
+                    </motion.div>
+                  </div>
+                </div>
+              </motion.div>
+ 
+              {/* Risk stratification card */}
+              <motion.div
+                className="lg:col-span-2"
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0 }}
+                transition={{ duration: 0.6, ease: [0.22,1,0.36,1], delay: 0.12 }}
+              >
+                <div
+                  className="h-full rounded-[20px] border border-zinc-200/80 bg-white p-7 flex flex-col gap-6"
+                  style={{ boxShadow: "0 2px 20px rgba(0,0,0,0.04), 0 0 0 1px rgba(16,185,129,0.04)" }}
+                >
+                  {/* Card header */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-center gap-2.5">
+                      <div className="h-7 w-7 rounded-[8px] flex items-center justify-center shrink-0"
+                        style={{ background: "rgba(239,68,68,0.07)", border: "1px solid rgba(239,68,68,0.12)" }}
+                      >
+                        <ShieldAlert className="h-3.5 w-3.5 text-red-400" strokeWidth={2} />
+                      </div>
+                      <span className="section-label text-zinc-500">Stratified Risk Classification</span>
+                    </div>
+                    <span className="ayu-mono text-[9px] tracking-[0.14em] uppercase px-2.5 py-1 rounded-[7px] self-start sm:self-auto"
+                      style={{ background: "rgba(16,185,129,0.07)", color: "#059669", border: "1px solid rgba(16,185,129,0.14)" }}
+                    >
+                      Gemini 2.5 Core
+                    </span>
+                  </div>
+ 
+                  {/* Bars */}
+                  <div className="space-y-5 flex-1">
+                    {[
+                      { label: "High Risk",   pct: data && data.total > 0 ? (highRisk.count / data.total) * 100 : 0,   count: highRisk.count,   color: "#ef4444", bg: "#fef2f2", bdr: "#fecaca", bar: "linear-gradient(90deg,#ef4444,#dc2626)" },
+                      { label: "Medium Risk", pct: data && data.total > 0 ? (mediumRisk.count / data.total) * 100 : 0, count: mediumRisk.count, color: "#f59e0b", bg: "#fffbeb", bdr: "#fde68a", bar: "linear-gradient(90deg,#f59e0b,#d97706)" },
+                      { label: "Low Risk",    pct: data && data.total > 0 ? (lowRisk.count / data.total) * 100 : 0,    count: lowRisk.count,    color: "#10b981", bg: "#ecfdf5", bdr: "#a7f3d0", bar: "linear-gradient(90deg,#10b981,#0d9488)" },
+                    ].map(({ label, pct, count, color, bg, bdr, bar }, i) => (
+                      <div key={label} className="space-y-2.5">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2.5">
+                            <div className="h-2 w-2 rounded-full shrink-0" style={{ background: color }} />
+                            <span className="text-[12.5px] font-semibold text-zinc-700">{label}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="ayu-mono text-[10px] text-zinc-600">{pct.toFixed(0)}%</span>
+                            <span className="ayu-mono text-[12px] font-bold text-zinc-900 tabular-nums min-w-[2ch] text-right">{count}</span>
+                            <span className="text-[10px] text-zinc-600 font-medium">cases</span>
+                          </div>
+                        </div>
+                        {/* Track */}
+                        <div className="h-[6px] rounded-full overflow-hidden" style={{ background: bg, border: `1px solid ${bdr}` }}>
+                          <motion.div
+                            initial={{ width: 0 }}
+                            whileInView={{ width: `${pct}%` }}
+                            viewport={{ once: true, amount: 0 }}
+                            transition={{ duration: 1.2, ease: [0.22,1,0.36,1], delay: 0.25 + i * 0.1 }}
+                            className="h-full rounded-full"
+                            style={{ background: bar }}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+ 
+                  {/* Mini summary row */}
+                  <div className="flex items-center gap-3 pt-4 border-t border-zinc-100">
+                    {[
+                      { label: "Total", val: data?.total ?? 0, color: "#18181b" },
+                      { label: "Avg Score", val: `${data ? Math.round(data.distribution.reduce((a,d)=>a+d.averageScore,0)/data.distribution.length) : 0}%`, color: "#10b981" },
+                      { label: "High Alert", val: highRisk.count, color: "#ef4444" },
+                    ].map(({ label, val, color }) => (
+                      <div key={label} className="flex-1 text-center">
+                        <div className="ayu-mono text-[18px] font-black tabular-nums" style={{ color }}>{val}</div>
+                        <div className="section-label mt-0.5">{label}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+ 
+            {/* ── RAG Pipeline card ── */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0 }}
+              transition={{ duration: 0.6, ease: [0.22,1,0.36,1], delay: 0.1 }}
+            >
+              <div
+                className="relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 p-6 rounded-[16px] border"
+                style={{
+                  borderColor: "rgba(16,185,129,0.18)",
+                  background: "linear-gradient(135deg,rgba(16,185,129,0.04) 0%,rgba(14,165,233,0.03) 100%)",
+                }}
+              >
+                {/* bg shimmer */}
+                <div className="absolute inset-0 pointer-events-none"
+                  style={{
+                    backgroundImage: "radial-gradient(circle at 10% 50%, rgba(16,185,129,0.06) 0%, transparent 60%)",
+                  }}
+                />
+                <div className="flex items-center gap-4 z-10 relative">
+                  <div
+                    className="h-11 w-11 rounded-[12px] flex items-center justify-center shrink-0"
+                    style={{ background: "linear-gradient(135deg,rgba(16,185,129,0.14),rgba(14,165,233,0.1))", border: "1px solid rgba(16,185,129,0.2)" }}
+                  >
+                    <Zap className="h-5 w-5 text-emerald-500" fill="rgba(16,185,129,0.25)" strokeWidth={2} />
+                  </div>
+                  <div className="space-y-0.5">
+                    <h4 className="text-[13.5px] font-bold text-zinc-900">RAG Clinical Index — Operational</h4>
+                    <p className="ayu-mono text-[10.5px] text-zinc-500">
+                      Vector lookup bound to{" "}
+                      <span className="font-semibold" style={{ color: "#059669" }}>panscience-medical</span>{" "}
+                      namespace
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2.5 z-10 relative px-3.5 py-2 rounded-[9px] border border-emerald-100 bg-white shrink-0">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                  </span>
+                  <span className="section-label text-emerald-600">Index Online</span>
                 </div>
               </div>
-            ))}
+            </motion.div>
+ 
           </div>
-        </div>
-      </motion.div>
-    </div>
-
-    {/* ── RAG Pipeline card ── */}
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={(statsInView || loading === false) ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.22 }}
-    >
-      <div
-        className="rag-card bg-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 p-6 rounded-[16px] border"
-        style={{ borderColor: "rgba(16,185,129,0.2)" }}
-      >
-        <div className="flex items-center gap-4">
-          <div
-            className="h-11 w-11 rounded-[12px] flex items-center justify-center shrink-0"
-            style={{
-              background: "linear-gradient(135deg, rgba(16,185,129,0.12) 0%, rgba(14,165,233,0.12) 100%)",
-              border: "1px solid rgba(16,185,129,0.2)",
-            }}
-          >
-            <Zap className="h-5 w-5 text-emerald-500" fill="rgba(16,185,129,0.3)" strokeWidth={2} />
-          </div>
-          <div className="space-y-0.5">
-            <h4 className="text-[13px] font-bold text-zinc-900 tracking-tight">
-              RAG Clinical Index — Operational
-            </h4>
-            <p className="ayu-mono text-[10.5px] text-zinc-500">
-              Vector lookup pipeline bound to{" "}
-              <span className="text-emerald-600 font-medium">panscience-medical</span>{" "}
-              namespace
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-          </span>
-          <span className="section-label text-xs font-mono text-emerald-600 uppercase tracking-wider font-semibold">Index Online</span>
-        </div>
-      </div>
-    </motion.div>
-
-  </div>
-</section>
+        </section>
 
       </div>
     </>

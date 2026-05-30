@@ -5,7 +5,7 @@ import { explainMedicalTerm } from "@/lib/api";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Loader2, HelpCircle, Search, BrainCircuit } from "lucide-react";
+import { Sparkles, Loader2, HelpCircle, Search, BrainCircuit, Activity } from "lucide-react";
 
 export default function MedicalExplainer({ defaultTerm }: { defaultTerm?: string }) {
   const [term, setTerm] = useState(defaultTerm || "");
@@ -35,65 +35,105 @@ export default function MedicalExplainer({ defaultTerm }: { defaultTerm?: string
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline" className="h-9 rounded-xl border-zinc-200 text-xs font-bold tracking-tight bg-white shadow-sm hover:bg-zinc-50 flex items-center gap-2">
-          <HelpCircle className="h-3.5 w-3.5 text-zinc-500" />
+        <Button variant="outline" className="h-9 rounded-xl border-zinc-200/80 text-xs font-bold tracking-tight bg-white shadow-sm hover:shadow hover:bg-zinc-50 flex items-center gap-2 transition-all duration-300 group">
+          <HelpCircle className="h-4 w-4 text-zinc-600 group-hover:text-emerald-500 transition-colors" />
           Clinical Term Explainer
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-full sm:max-w-md bg-white border-l border-zinc-200 p-6 flex flex-col justify-between">
-        <div className="space-y-6 flex-1 overflow-y-auto pr-2">
-          <SheetHeader className="space-y-1 text-left">
-            <div className="flex items-center gap-2 text-indigo-600 font-bold text-[10px] uppercase tracking-wider">
-              <BrainCircuit className="h-4 w-4" />
+
+      {/* 🌟 Fully responsive width constraints and fluid padding layout */}
+      <SheetContent side="right" className="w-full sm:max-w-md bg-white/95 backdrop-blur-xl border-l border-zinc-200/80 p-0 flex flex-col h-full shadow-2xl">
+
+        <div className="flex-1 overflow-y-auto px-6 py-8 space-y-8 no-scrollbar">
+
+          <SheetHeader className="space-y-2 text-left">
+            <div className="flex items-center gap-2 text-emerald-600 font-bold text-[10px] uppercase tracking-wider font-mono">
+              <span className="relative flex h-2 w-2 shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+              </span>
               Vector RAG Nodes Active
             </div>
-            <SheetTitle className="text-lg font-black tracking-tight text-zinc-950">
-              Medical Term Dictionary
+            <SheetTitle className="text-xl font-black tracking-tight text-zinc-900 flex items-center gap-2.5">
+              Medical Dictionary
             </SheetTitle>
-            {/* ✅ FIXED: Added SheetDescription to satisfy Radix UI accessibility constraints and clear terminal warnings */}
-            <SheetDescription className="text-xs text-zinc-500 font-medium">
-              Query the Pinecone index cluster to resolve and simplify complex medical terminology.
+            <SheetDescription className="text-[13px] text-zinc-500 font-medium leading-relaxed">
+              Query the Pinecone index cluster to securely resolve and simplify complex medical taxonomy in real-time.
             </SheetDescription>
           </SheetHeader>
 
-          <form onSubmit={handleExplain} className="flex gap-2">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-zinc-400" />
+          <form onSubmit={handleExplain} className="flex flex-col gap-3">
+            <div className="relative flex-1 group">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-600 group-focus-within:text-emerald-500 transition-colors" />
               <Input
                 placeholder="Type term (e.g., GERD, Vertigo)..."
-                className="pl-9 h-10 border-zinc-200 rounded-xl text-xs font-medium focus-visible:ring-1 focus-visible:ring-zinc-400 bg-zinc-50/50"
+                className="pl-10 h-12 border-zinc-200/80 rounded-xl text-sm font-semibold focus-visible:ring-4 focus-visible:ring-emerald-500/10 focus-visible:border-emerald-500/50 bg-zinc-50/50 transition-all shadow-sm"
                 value={term}
                 onChange={(e) => setTerm(e.target.value)}
               />
             </div>
-            <Button type="submit" className="bg-zinc-900 text-white hover:bg-zinc-800 rounded-xl h-10 px-4 text-xs font-bold" disabled={loading}>
-              {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Analyze"}
+            <Button
+              type="submit"
+              className="bg-zinc-950 text-white hover:bg-zinc-800 rounded-xl h-12 px-6 text-xs font-bold w-full active:scale-[0.98] transition-all shadow-md flex items-center justify-center gap-2"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin text-zinc-600" />
+                  <span className="text-zinc-300">Searching Index...</span>
+                </>
+              ) : (
+                <>
+                  <BrainCircuit className="h-4 w-4 text-emerald-400" />
+                  Analyze Terminology
+                </>
+              )}
             </Button>
           </form>
 
           {loading && (
-            <div className="py-12 flex flex-col items-center justify-center space-y-2 text-center">
-              <Loader2 className="h-5 w-5 text-zinc-900 animate-spin" />
-              <p className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Querying Pinecone Index...</p>
+            <div className="py-16 flex flex-col items-center justify-center space-y-4 text-center animate-in fade-in duration-300">
+              <div className="relative">
+                <div className="absolute inset-0 bg-emerald-100 rounded-full blur-xl opacity-60 animate-pulse" />
+                <Activity className="h-8 w-8 text-emerald-500 relative z-10 animate-bounce" style={{ animationDuration: '2s' }} />
+              </div>
+              <div className="space-y-1">
+                <p className="text-xs font-bold uppercase tracking-wider text-zinc-900 font-mono">Querying Pinecone Matrix</p>
+                <p className="text-[10px] text-zinc-600 font-medium">Extracting semantic context layers...</p>
+              </div>
             </div>
           )}
 
           {explanation && (
-            <div className="p-5 bg-gradient-to-br from-zinc-50 to-zinc-100/60 border border-zinc-200/60 rounded-2xl space-y-3 animate-in fade-in slide-in-from-y-2 duration-300">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-zinc-900 uppercase tracking-tight">
-                <Sparkles className="h-3.5 w-3.5 text-indigo-500" />
+            <div className="relative p-6 bg-gradient-to-br from-emerald-50/50 via-zinc-50/30 to-transparent border border-emerald-100/60 rounded-2xl space-y-4 animate-in fade-in slide-in-from-y-4 duration-500 overflow-hidden group">
+              <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-[0.05] transition-opacity">
+                <BrainCircuit className="h-24 w-24 text-emerald-600" />
+              </div>
+
+              <div className="flex items-center gap-2 text-[11px] font-bold text-emerald-700 uppercase tracking-wider font-mono relative z-10">
+                <Sparkles className="h-3.5 w-3.5 text-emerald-500" />
                 AI Context Resolution
               </div>
-              <p className="text-zinc-700 text-xs leading-relaxed font-medium antialiased">
+              <div className="w-full h-px bg-gradient-to-r from-emerald-200/60 to-transparent relative z-10" />
+
+              <p className="text-zinc-700 text-sm leading-relaxed font-medium antialiased relative z-10">
                 {explanation}
               </p>
             </div>
           )}
         </div>
 
-        <div className="border-t border-zinc-100 pt-4 bg-white text-[10px] font-bold text-zinc-400 tracking-wide uppercase">
-          Precision Knowledge Base Deployment Matrix
+        {/* Sticky bottom metadata footer */}
+        <div className="border-t border-zinc-100 p-6 bg-zinc-50/30">
+          <div className="flex items-center justify-between text-[9px] font-bold text-zinc-600 tracking-wider uppercase font-mono">
+            <span>Precision Knowledge Base</span>
+            <span className="flex items-center gap-1 text-emerald-600">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              v2.5.Flash Core
+            </span>
+          </div>
         </div>
+
       </SheetContent>
     </Sheet>
   );

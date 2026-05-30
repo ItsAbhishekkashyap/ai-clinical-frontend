@@ -183,11 +183,10 @@ export default function Header() {
               return (
                 <Link key={link.href} href={link.href}>
                   <motion.span
-                    className={`relative flex items-center gap-2 px-4 py-[7px] rounded-[10px] text-[12.5px] font-semibold tracking-[-0.01em] transition-colors cursor-pointer select-none ${
-                      isActive
+                    className={`relative flex items-center gap-2 px-4 py-[7px] rounded-[10px] text-[12.5px] font-semibold tracking-[-0.01em] transition-colors cursor-pointer select-none ${isActive
                         ? "text-zinc-900"
                         : "text-zinc-500 hover:text-zinc-700"
-                    }`}
+                      }`}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.97 }}
                     transition={{ type: "spring", stiffness: 500, damping: 25 }}
@@ -261,7 +260,7 @@ export default function Header() {
                       </span>
 
                     </div>
-                    <ChevronDown className="h-3 w-3 text-zinc-400 ml-0.5" />
+                    <ChevronDown className="h-3 w-3 text-zinc-600 ml-0.5" />
                   </motion.button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
@@ -283,7 +282,7 @@ export default function Header() {
                       </div>
                       <div>
                         <p className="text-[12.5px] font-bold text-zinc-900">{user.name}</p>
-                        <p className="text-[10px] text-zinc-400 truncate max-w-[140px]">{user.email}</p>
+                        <p className="text-[10px] text-zinc-600 truncate max-w-[140px]">{user.email}</p>
                       </div>
                     </div>
                   </DropdownMenuLabel>
@@ -396,7 +395,7 @@ export default function Header() {
                       </div>
                       <div>
                         <p className="text-[13px] font-bold text-zinc-900 leading-none">{user.name}</p>
-                        <p className="text-[10px] text-zinc-400 mt-1 truncate max-w-[170px]">{user.email}</p>
+                        <p className="text-[10px] text-zinc-600 mt-1 truncate max-w-[170px]">{user.email}</p>
                       </div>
                     </div>
                   )}
@@ -404,7 +403,7 @@ export default function Header() {
 
                 {/* Nav Links */}
                 <div className="flex-1 px-4 py-5 space-y-1.5">
-                  <p className="text-[9.5px] font-bold tracking-[0.18em] uppercase text-zinc-400 px-2 mb-3">
+                  <p className="text-[9.5px] font-bold tracking-[0.18em] uppercase text-zinc-600 px-2 mb-3">
                     Navigation
                   </p>
                   {links.map((link, i) => {
@@ -423,31 +422,29 @@ export default function Header() {
                           className="block"
                         >
                           <motion.div
-                            className={`mobile-sheet-link flex items-center gap-3 px-4 py-3 rounded-[12px] transition-colors ${
-                              isActive
+                            className={`mobile-sheet-link flex items-center gap-3 px-4 py-3 rounded-[12px] transition-colors ${isActive
                                 ? "text-zinc-900"
                                 : "text-zinc-500 hover:text-zinc-800"
-                            }`}
+                              }`}
                             style={
                               isActive
                                 ? {
-                                    background: "white",
-                                    boxShadow: "0 1px 6px rgba(0,0,0,0.06), 0 0 0 1px rgba(16,185,129,0.14)",
-                                  }
+                                  background: "white",
+                                  boxShadow: "0 1px 6px rgba(0,0,0,0.06), 0 0 0 1px rgba(16,185,129,0.14)",
+                                }
                                 : {}
                             }
                             whileTap={{ scale: 0.97 }}
                           >
                             <div
-                              className={`h-7 w-7 rounded-[8px] flex items-center justify-center shrink-0 ${
-                                isActive ? "" : "bg-zinc-100"
-                              }`}
+                              className={`h-7 w-7 rounded-[8px] flex items-center justify-center shrink-0 ${isActive ? "" : "bg-zinc-100"
+                                }`}
                               style={
                                 isActive
                                   ? {
-                                      background: "linear-gradient(135deg, #ecfdf5, #d1fae5)",
-                                      boxShadow: "0 0 0 1px rgba(16,185,129,0.2)",
-                                    }
+                                    background: "linear-gradient(135deg, #ecfdf5, #d1fae5)",
+                                    boxShadow: "0 0 0 1px rgba(16,185,129,0.2)",
+                                  }
                                   : {}
                               }
                             >

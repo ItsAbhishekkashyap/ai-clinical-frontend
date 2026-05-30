@@ -8,7 +8,7 @@ import { useRef } from "react";
 const LINKS = [
   { label: "Dashboard", href: "/" },
   { label: "New Intake", href: "/consultation/new" },
-  { label: "Clinical Index", href: "#" },
+  { label: "Query RAG Index", href: "#" },
 ];
 
 export default function Footer() {
@@ -131,7 +131,7 @@ export default function Footer() {
               transition={{ duration: 0.5, delay: 0.16, ease: [0.22, 1, 0.36, 1] }}
             >
               <div className="status-pulse" />
-              <span className="text-[10px] font-semibold tracking-[0.12em] uppercase text-zinc-400">
+              <span className="text-[10px] font-semibold tracking-[0.12em] uppercase text-zinc-600">
                 Provider Node Active
               </span>
             </motion.div>
@@ -151,7 +151,7 @@ export default function Footer() {
 
           {/* Copyright */}
           <motion.p
-            className="text-[11px] font-medium text-zinc-400 text-center"
+            className="text-[11px] font-medium text-zinc-600 text-center"
             initial={{ opacity: 0 }}
             animate={inView ? { opacity: 1 } : {}}
             transition={{ duration: 0.5, delay: 0.32 }}
