@@ -8,7 +8,7 @@ import RouteGuard from "@/components/RouteGuard"; // Our newly split component
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AyuNidan | AI Clinical Dashboard",
+  title: "AyuNidan | Smart Healthcare",
   description: "Advanced AI-powered clinical intelligence and risk assessment platform.",
 };
 
